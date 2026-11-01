@@ -1,0 +1,9 @@
+.DS_Store
+
+# Android signing: keys and passwords never go to git
+android-app/keystore.properties
+*.keystore
+*.jks
+
+# Copied from ../index.html by the syncWebAssets Gradle task on every build
+android-app/app/src/main/assets/index.html
