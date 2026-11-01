@@ -1,6 +1,6 @@
 # Chess AI Android (Google Play Ready)
 
-This folder contains an Android wrapper for your existing `index.html` chess app.
+This folder contains an Android wrapper for the `index.html` chess app in the repository root.
 It uses `WebView`, so functionality stays aligned with the web version:
 
 - chess board and timers
@@ -11,11 +11,17 @@ It uses `WebView`, so functionality stays aligned with the web version:
 ## Project Structure
 
 - `app/src/main/java/com/jigo/chessai/MainActivity.kt`: WebView host
-- `app/src/main/assets/index.html`: game UI/logic asset
+- `app/src/main/assets/index.html`: game UI/logic asset, copied from `../index.html` on every build (not tracked in git)
 - `app/src/main/res/xml/network_security_config.xml`: cleartext HTTP support
 - `app/build.gradle`: syncs root `../index.html` into assets before build
 - `keystore.properties`: local signing config (ignored by git)
 - `play/*`: Google Play publication templates/checklist
+
+## Requirements
+
+- JDK 17+ (`JAVA_HOME`)
+- Android SDK with platform 34 (`ANDROID_HOME`, e.g. `~/Library/Android/sdk`)
+- Gradle comes with the wrapper (`./gradlew`), no global install needed
 
 ## Signing Config
 
@@ -31,13 +37,16 @@ It uses `WebView`, so functionality stays aligned with the web version:
 
 Optional: generate a new upload keystore:
 
-- `./scripts/create-upload-keystore.sh`
+- `./scripts/create-upload-keystore.sh` (creates `upload-keystore.jks` in this folder)
+
+`storeFile` is resolved relative to `app/`, so a keystore in this folder is `../upload-keystore.jks`.
+Keystores and `keystore.properties` are ignored by git: keep a backup of the upload key outside the repository.
 
 ## Build
 
 ### Debug APK
 
-- `gradle -p . assembleDebug`
+- `./gradlew assembleDebug`
 - output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ### Release AAB (for Google Play)
@@ -47,8 +56,8 @@ Optional: generate a new upload keystore:
 
 ### Release APK (manual install)
 
-- `gradle -p . assembleRelease`
-- output: `app/build/outputs/apk/release/app-release-unsigned.apk`
+- `./gradlew assembleRelease`
+- output: `app/build/outputs/apk/release/app-release.apk` (signed when `keystore.properties` is set, otherwise `app-release-unsigned.apk`)
 
 ## Google Play
 

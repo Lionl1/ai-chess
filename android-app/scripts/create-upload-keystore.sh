@@ -12,7 +12,7 @@ fi
 echo "Creating upload keystore at: $KEYSTORE_PATH"
 echo "You will be prompted for passwords and certificate fields."
 
-/opt/homebrew/opt/openjdk/bin/keytool \
+"${JAVA_HOME:+$JAVA_HOME/bin/}keytool" \
   -genkeypair \
   -v \
   -keystore "$KEYSTORE_PATH" \
@@ -23,5 +23,5 @@ echo "You will be prompted for passwords and certificate fields."
 
 echo
 echo "Done. Update android-app/keystore.properties with:"
-echo "storeFile=$(basename "$KEYSTORE_PATH")"
+echo "storeFile=../$(basename "$KEYSTORE_PATH")"
 echo "keyAlias=upload"
