@@ -13,7 +13,7 @@ if [[ ! -f "$ROOT_DIR/keystore.properties" ]]; then
   exit 1
 fi
 
-gradle -p "$ROOT_DIR" clean bundleRelease
+"$ROOT_DIR/gradlew" -p "$ROOT_DIR" clean bundleRelease
 
 echo
 echo "AAB:"
