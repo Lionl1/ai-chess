@@ -7,3 +7,4 @@ android-app/keystore.properties
 
 # Copied from ../index.html by the syncWebAssets Gradle task on every build
 android-app/app/src/main/assets/index.html
+node_modules/

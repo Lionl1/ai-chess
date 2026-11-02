@@ -544,7 +544,7 @@
         let gameStarted = false;
         let lastAnimatedPly = 0;
         let aiRetryTimer = null;
-        const AI_REQUEST_TIMEOUT_MS = 15000;
+        const AI_REQUEST_TIMEOUT_MS = 60000; // локальным моделям нужно время
         const AI_MAX_RETRIES = 3;
 
         function formatTime(seconds) {
@@ -1161,11 +1161,15 @@
 
         function resignGame() {
             if (game.game_over() || gameEnded) return;
-            // Сдался тот, чей сейчас ход. Значит победил соперник.
-            // turn 'w' -> White resigns -> Black wins (0)
-            const result = game.turn() === 'w' ? 0 : 1;
-            const loser = game.turn() === 'w' ? 'Белые' : 'Черные';
-            const winner = game.turn() === 'w' ? 'Черные' : 'Белые';
+            // Против AI сдаётся игрок (даже если AI сейчас думает над ходом),
+            // в остальных режимах — сторона, чей ход.
+            const loserColor = gameMode === 'pva'
+                ? document.getElementById('player-color').value
+                : game.turn();
+            // result: 1 — победа белых, 0 — победа черных
+            const result = loserColor === 'w' ? 0 : 1;
+            const loser = loserColor === 'w' ? 'Белые' : 'Черные';
+            const winner = loserColor === 'w' ? 'Черные' : 'Белые';
             handleGameOver(result, `Игра окончена: ${loser} сдались. Победили ${winner}.`);
         }
 
@@ -1429,7 +1433,12 @@
                     return;
                 }
                 if (moveSan.toUpperCase() === 'DRAW') {
-                    handleGameOver(0.5, `${color} предлагает ничью.`);
+                    // Против человека ничья только с его согласия; AI против AI — сразу
+                    if (gameMode !== 'pva' || confirm(`${color} (AI) предлагает ничью. Принять?`)) {
+                        handleGameOver(0.5, `Ничья: ${color} предложил, соперник принял.`);
+                        return;
+                    }
+                    scheduleRetry('ничья отклонена', 'Your draw offer was declined. You MUST choose a move from the VALID legal moves list.', 500);
                     return;
                 }
 
